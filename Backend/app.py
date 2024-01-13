@@ -1,8 +1,10 @@
 import numpy as np
+import pandas as pd
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fuzzywuzzy import fuzz
 from pydantic import BaseModel
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -29,6 +31,11 @@ class DeltaModel(BaseModel):
     disaster_risk: float
     importance: float
 
+
+dataset = pd.read_csv("../Models/companies_final.csv")
+dataset.drop("Unnamed: 0", axis=1, inplace=True)
+
+dataset = dataset.iloc[:2000]  # because only 2000 entries are used in the training data
 
 app = FastAPI()
 
@@ -88,6 +95,17 @@ async def calc_x(data: DeltaModel):
         return {"x_value": x_value}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/search")
+async def get_company_results(query: str):
+    names = dataset["name"].tolist()
+    print(names)
+    names = sorted(names, key=lambda x: fuzz.ratio(x.lower(), query.lower()), reverse=True)[:10]
+    results = []
+    for name in names:
+        results.append(dataset[dataset["name"] == name].iloc[0].to_dict())
+    return JSONResponse(results)
 
 
 if __name__ == '__main__':
