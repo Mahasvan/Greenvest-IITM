@@ -27,7 +27,7 @@ MANUAL_ENCODING = {
 
 class DeltaModel(BaseModel):
     industry: str
-    Emissions: float
+    emissions: float
     disaster_risk: float
     importance: float
 

@@ -10,7 +10,7 @@ THRESHOLD = 0.75
 
 def calculate_x(data):
     beta = 1
-    k = K_VALUE * data["Emissions"] + 1
+    k = K_VALUE * data["emissions"] + 1
     E_r_i = ERI * PRINCIPAL
     E_f_i = EFI
     I_in = len(data[data["industry"] == data["industry"]])
