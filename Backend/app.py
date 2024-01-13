@@ -108,5 +108,11 @@ async def get_company_results(query: str, limit: int = 10):
     return JSONResponse(results)
 
 
+@app.get("/companies")
+async def get_company_names(limit: int = 100):
+    results = dataset["name"].tolist()[:limit]
+    return JSONResponse(results)
+
+
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
