@@ -98,10 +98,10 @@ async def calc_x(data: DeltaModel):
 
 
 @app.get("/search")
-async def get_company_results(query: str):
+async def get_company_results(query: str, limit: int = 10):
     names = dataset["name"].tolist()
     print(names)
-    names = sorted(names, key=lambda x: fuzz.ratio(x.lower(), query.lower()), reverse=True)[:10]
+    names = sorted(names, key=lambda x: fuzz.ratio(x.lower(), query.lower()), reverse=True)[:limit]
     results = []
     for name in names:
         results.append(dataset[dataset["name"] == name].iloc[0].to_dict())
